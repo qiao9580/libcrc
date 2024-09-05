@@ -26,12 +26,13 @@ namespace libcrc
             if (len == 0) len = buffer.Length - start;
             int length = start + len;
             if (length > buffer.Length) return null;
-            Array.Reverse(buffer);
+            byte[] buffer_reverse = buffer.ToArray();
+            Array.Reverse(buffer_reverse);
             for (int i = start; i < length; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    bool bit = ((buffer[i] >> (7 - j) & 1) == 1);
+                    bool bit = ((buffer_reverse[i] >> (7 - j) & 1) == 1);
                     bool c31 = ((crc >> 31 & 1) == 1);
                     crc <<= 1;
                     if (c31 ^ bit)
