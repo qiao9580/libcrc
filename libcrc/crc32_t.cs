@@ -19,7 +19,6 @@
         public byte[] data_get()
         {
             byte[] ret = BitConverter.GetBytes(crc);
-            Array.Reverse(ret);
             return ret;
         }
         public byte[] block_calculate(byte[] buffer, int start = 0, int len = 0)
@@ -41,7 +40,6 @@
                 }
             }
             byte[] ret = BitConverter.GetBytes(~crc);
-            Array.Reverse(ret);
             return ret;
         }
     }
