@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace libcrc
 {
-    internal class crc32_stm_t
+    public class crc32_stm_t
     {
         private uint crc = 0xFFFFFFFF;// Initial value
 
@@ -26,17 +26,6 @@ namespace libcrc
             if (len == 0) len = buffer.Length - start;
             int length = start + len;
             if (length > buffer.Length) return null;
-            for (int i = start; i < length; i++)
-            {
-                crc ^= buffer[i];
-                for (int j = 0; j < 8; j++)
-                {
-                    if ((crc & 1) > 0)
-                        crc = (crc >> 1) ^ 0xEDB88320;// 0xEDB88320= reverse 0x04C11DB7
-                    else
-                        crc = crc >> 1;
-                }
-            }
             for (int i = start; i < length; i++)
             {
                 for (int j = 0; j < 8; j++)
