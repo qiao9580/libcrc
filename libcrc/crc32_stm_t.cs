@@ -26,6 +26,7 @@ namespace libcrc
             if (len == 0) len = buffer.Length - start;
             int length = start + len;
             if (length > buffer.Length) return null;
+            Array.Reverse(buffer);
             for (int i = start; i < length; i++)
             {
                 for (int j = 0; j < 8; j++)
