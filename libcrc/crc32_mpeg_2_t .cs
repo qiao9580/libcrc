@@ -16,22 +16,20 @@
         { 
             crc = 0xFFFFFFFF;
         }
-        public byte[] data_get()
+        public uint data_get()
         {
-            byte[] ret = BitConverter.GetBytes(crc);
-            return ret;
+            return crc;
         }
-        public byte[] block_calculate(byte[] buffer, int start = 0, int len = 0)
+        public uint block_calculate(byte[] buffer, uint start = 0, uint len = 0)
         {
-            if (buffer == null || buffer.Length == 0) return null;
-            if (start < 0) return null;
-            if (len == 0) len = buffer.Length - start;
-            int length = start + len;
-            if (length > buffer.Length) return null;
-            for (int i = start; i < length; i++)
+            if (buffer == null || buffer.Length == 0) return 0;
+            if (len == 0) len = (uint)buffer.Length - start;
+            uint length = start + len;
+            if (length > buffer.Length) return 0;
+            for (uint i = start; i < length; i++)
             {
                 crc ^= (uint)(buffer[i] << 24);
-                for (int j = 0; j < 8; j++)
+                for (uint j = 0; j < 8; j++)
                 {
                     if ((crc & 0x80000000) > 0)
                         crc = (crc << 1) ^ 0x04C11DB7;
@@ -39,8 +37,7 @@
                         crc = crc << 1;
                 }
             }
-            byte[] ret = BitConverter.GetBytes(crc);
-            return ret;
+            return crc;
         }
     }
 }

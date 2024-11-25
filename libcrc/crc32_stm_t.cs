@@ -14,29 +14,27 @@ namespace libcrc
         {
             crc = 0xFFFFFFFF;
         }
-        public byte[] data_get()
+        public uint data_get()
         {
-            byte[] ret = BitConverter.GetBytes(crc);
-            return ret;
+            return crc;
         }
-        public byte[] block_calculate(byte[] buffer, int start = 0, int len = 0)
+        public uint block_calculate(byte[] buffer, uint start = 0, uint len = 0)
         {
-            if (buffer == null || buffer.Length == 0) return null;
-            if (start < 0) return null;
-            if (len == 0) len = buffer.Length - start;
-            int length = start + len;
-            if (length > buffer.Length) return null;
-            byte[] buffer_reverse = buffer.Skip(start).Take(length).ToArray();
-            for (int i = start; i < length; i += 4)
+            if (buffer == null || buffer.Length == 0) return 0;
+            if (len == 0) len = (uint)buffer.Length - start;
+            uint length = start + len;
+            if (length > buffer.Length) return 0;
+            byte[] buffer_reverse = buffer.Skip((int)start).Take((int)length).ToArray();
+            for (uint i = start; i < length; i += 4)
             {
-                Array.Reverse(buffer_reverse, i, 4);
+                Array.Reverse(buffer_reverse, (int)i, 4);
             }
 
-            for (int i = start; i < length; i++)
+            for (uint i = start; i < length; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (uint j = 0; j < 8; j++)
                 {
-                    bool bit = ((buffer_reverse[i] >> (7 - j) & 1) == 1);
+                    bool bit = ((buffer_reverse[i] >> (7 - (int)j) & 1) == 1);
                     bool c31 = ((crc >> 31 & 1) == 1);
                     crc <<= 1;
                     if (c31 ^ bit)
@@ -47,8 +45,7 @@ namespace libcrc
             }
             crc &= 0xFFFFFFFF;
             crc ^= 0x00000000;
-            byte[] ret = BitConverter.GetBytes(crc);
-            return ret;
+            return crc;
         }
     }
 }

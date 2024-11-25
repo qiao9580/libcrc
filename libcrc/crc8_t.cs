@@ -16,22 +16,21 @@
         { 
             crc = 0;
         }
-        public byte[] data_get()
+        public byte data_get()
         {
-            return new byte[] { crc };
+            return crc;
         }
-        public byte[] block_calculate(byte[] buffer, int start = 0, int len = 0)
+        public byte block_calculate(byte[] buffer, uint start = 0, uint len = 0)
         {
-            if (buffer == null || buffer.Length == 0) return null;
-            if (start < 0) return null;
-            if (len == 0) len = buffer.Length - start;
-            int length = start + len;
-            if (length > buffer.Length) return null;
+            if (buffer == null || buffer.Length == 0) return 0;
+            if (len == 0) len = (uint)buffer.Length - start;
+            uint length = start + len;
+            if (length > buffer.Length) return 0;
             
-            for (int i = start; i < length; i++)
+            for (uint i = start; i < length; i++)
             {
                 crc ^= buffer[i];
-                for (int j = 0; j < 8; j++)
+                for (uint j = 0; j < 8; j++)
                 {
                     if ((crc & 0x80) > 0)
                         crc = (byte)((crc << 1) ^ 0x07);
@@ -39,7 +38,7 @@
                         crc = (byte)(crc << 1);
                 }
             }
-            return new byte[] { crc };
+            return crc;
         }
     }
 }
