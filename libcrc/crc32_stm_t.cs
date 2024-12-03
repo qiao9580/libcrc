@@ -24,17 +24,24 @@ namespace libcrc
             if (len == 0) len = (uint)buffer.Length - start;
             uint length = start + len;
             if (length > buffer.Length) return 0;
-            byte[] buffer_reverse = buffer.Skip((int)start).Take((int)length).ToArray();
+
+            //4字节对齐
+            if (len % 4 != 0)
+                len = (len / 4 + 1) * 4;
+            byte[] bytes = new byte[len];
+            Array.Fill<byte>(bytes, 0xff);
+            buffer.Skip((int)start).Take((int)len).ToArray().CopyTo(bytes, 0);
+
             for (uint i = start; i < length; i += 4)
             {
-                Array.Reverse(buffer_reverse, (int)i, 4);
+                Array.Reverse(bytes, (int)i, 4);
             }
 
             for (uint i = start; i < length; i++)
             {
                 for (uint j = 0; j < 8; j++)
                 {
-                    bool bit = ((buffer_reverse[i] >> (7 - (int)j) & 1) == 1);
+                    bool bit = ((bytes[i] >> (7 - (int)j) & 1) == 1);
                     bool c31 = ((crc >> 31 & 1) == 1);
                     crc <<= 1;
                     if (c31 ^ bit)
